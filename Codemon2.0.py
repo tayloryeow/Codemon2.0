@@ -1,33 +1,77 @@
+`import numpy
 import pygame
-import sys
+
+screen_width = 1280
+screen_height = 640
+
+tile_width = 40
+tile_height = 40
+
+FPS = 30
+fpsClock=pygame.time.Clock()
+
+
+class Character:
+    loc_y = 0
+    loc_x = 0
+
+    def __init__(self, name, tilesheet):
+        self.name = name
+        self.tilesheet = tilesheet
+        self.step_x = 40
+        self.step_y = 40
+
+    # Move the character - only works on discrete directions
+    def move(self, direction):
+        if direction:
+            if direction == "North":
+                self.loc_y = self.loc_y - 1 * self.step_y
+            elif direction == "South":
+                self.loc_y = self.loc_y + 1 * self.step_y
+            elif direction == "West":
+                self.loc_x = self.loc_x - 1
+            elif direction == "East":
+                self.loc_x = self.loc_x + 1
+
+    def get_loc(self):
+        return (self.loc_x, self.loc_y)
+
+
 
 def main():
+    #Intialize game library.
     pygame.init()
 
-    player = pygame.image.load("player.png")
-    pygame.display.set_icon(player)
-    pygame.display.set_caption("minimal program")
+    screen_width = 10
+    screen_height = 10
 
-    #Create surface
-    screen = pygame.display.set_mode((640, 640))
+    tile_width = 40
+    tile_height = 40
+
+    #Create a zero gameboard
+    game_board = numpy.zeros(shape=(screen_width, screen_height))
+
+    #Load in game sprites
+    #player_sprites = pygame.image.load("sprites/player.png")
+    #pygame.display.set_icon(player_sprites)
+    #pygame.display.set_caption("Codemon2.0")
+
+    print (game_board)
+
+    #Create Screen
+    screen = pygame.display.set_mode((screen_width * tile_width, screen_height * tile_height))
 
     # Game start stop variable
     running = True
 
-    #Draw player sprite onto buffer
-    screen.blit(player, (50, 50))
+    #Load Character tilesheet
+    #player = Character("player", player_sprites);
 
-    #Draw buffer to screen
-    pygame.display.flip()
-
-    player.set_colorkey((255, 0, 255))
-    screen.fill((0,0,0))
-    #Game Loop
     while running:
-        #Event handling,
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
+        print game_board
+    
+
+
 
 if __name__=="__main__":
     main()

@@ -17,29 +17,45 @@ fpsClock=pygame.time.Clock()
 
 
 class Game_board:
-    characters_list = None
+    __characters_refs = None
+    __map = None
+    __image = None
+    __width = 0
+    __height = 0
+
 
     '''Create game board'''
     def __init__(self, board_name, width, height):
-        self.width = width
-        self.height = height
-        self.board_name = board_name
-        self.tiles = numpy.zeros(shape=(width, height))
+        self.__width = width
+        self.__height = height
+        self.__board_name = board_name
+        self.__map = numpy.zeros(shape=(width, height))
+        #self.__image = pygame.display.
+
+    '''def render_board(self):
+        for y in range(0, self.__width):
+            for x in range(0, self.__height):
+    '''
 
     '''Load list of characters into game map'''
     def load_characters(self, characters_list):
-        self.characters_list = characters_list
+        self.__characters_refs = characters_list
+
+    def get_height(self):
+        return self.__height
+
+    def get_width(self):
+        return self.__width
 
     '''String representation of game_board'''
     def __str__(self):
-
-        character_map_copy = deepcopy(self.tiles)
-
-        for character in self.characters_list:
+        character_map_copy = deepcopy(self.__map)
+        for character in self.__characters_refs:
             character_map_copy[character.loc_x][character.loc_y] = 8
 
         return str(character_map_copy)
 
+#TODO add event listener bounds checking
 class Character:
     __name = ""
     __loc_y = 0
@@ -76,13 +92,13 @@ class Character:
     def move(self, direction):
         if direction:
             if direction == "NORTH":
-                self.loc_y = self.loc_y - 1
+                self.loc_y = self.loc_y - 1 * 40
             elif direction == "SOUTH":
-                self.loc_y = self.loc_y + 1
+                self.loc_y = self.loc_y + 1 * 40
             elif direction == "WEST":
-                self.loc_x = self.loc_x - 1
+                self.loc_x = self.loc_x - 1 * 40
             elif direction == "EAST":
-                self.loc_x = self.loc_x + 1
+                self.loc_x = self.loc_x + 1 * 40
 
     def get_loc(self):
         return (self.loc_x, self.loc_y)
@@ -100,13 +116,13 @@ def main():
     pygame.display.set_caption("Codemon2.0")
 
 
-    board = Game_board("Test_board", 2, 2)
+    board = Game_board("Test_board", 10, 10)
     test_player = Character("Paper Boy", (0, 0))
     board.load_characters([test_player])
     test_player.set_sprite_sheet(player_sprites)
 
     #Create Screen
-    screen = pygame.display.set_mode((board.width * tile_width*10, board.height * tile_height*10))
+    screen = pygame.display.set_mode((board.get_width() * tile_width, board.get_height() * tile_height))
 
 
     # Game start stop variable
@@ -120,17 +136,17 @@ def main():
         for event in pygame.event.get():
             if event.type == QUIT:
                 sys.exit()
-            if event.type == pygame.K_DOWN:
-                print ("down")
-                test_player.move("SOUTH")
-            elif event.type == pygame.K_UP:
-                print("up")
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
                 test_player.move("NORTH")
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_DOWN:
+                test_player.move("SOUTH")
+            elif event.type == pygame.KEYDOWN and event.key == K_RIGHT:
+                test_player.move("EAST")
+            elif event.type == pygame.KEYDOWN and event.key == K_LEFT:
+                test_player.move("WEST")
 
         #TODO Write renderer that creates a bitmap from board repr
         #TODO add dirty rectangle blit so that only player old pos and new player pos or animated
-        #TODO fix key event handling
-        #TODO add 4 dimensional movement to thing
         #TODO Add Clock timer
 
         #Blit sprite

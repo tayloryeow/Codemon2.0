@@ -12,8 +12,8 @@ class Tileset:
     #Mapping of tile's int representations to graphical tile_set locations
     __tiles_map = {
         GRASS:(0,32,32,32),
-        SIGN:(64,0,98,32),
-        TALL_GRASS:(64,32,98,64)
+        SIGN:(64,0,32,32),
+        TALL_GRASS:(64,32,32,32)
     }
 
     def __init__(self, name):

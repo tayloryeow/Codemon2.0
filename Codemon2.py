@@ -1,51 +1,13 @@
-import numpy
-import pygame
+from Renderer import Renderer
 from character import *
-from Game_Board import *
 from pygame.locals import *
+from Game_Board import *
 
-from copy import copy, deepcopy
 
-FPS = 10
+
+
+FPS = 60
 fpsClock=pygame.time.Clock()
-
-
-
-'''
-Class that renders the board into graphical format. 
-It is the controller that build the view from the models that is the Board class
-
-Board contains references to that needs to be represented in it, so only board
-'''
-class Renderer:
-    def __init__(self):
-        board = None
-        tile_set = None
-
-    def load_board(self, board):
-        self.board = board
-        return self
-
-    def load_player(self, player):
-        self.player = player
-        return player
-
-    def load_tileset(self, tiles):
-        self.tile_set = tiles
-        return self
-
-    '''Loop through every index of the bitmap and resolve it into its graphical tile'''
-    def render_board(self, screen):
-        # create a new Surface
-        for y in range(0, self.board.get_width()):
-            for x in range(0, self.board.get_height()):
-                curr_int_tile = self.board.get_tile((x,y))
-
-                #Check that the tile is valid
-                if self.tile_set.is_tile_in_set(curr_int_tile):
-                    #render the tile - cut the approparite tile from the tileset and past that there
-                    screen.blit(self.tile_set.get_tileset(), (x*32, y*32), self.tile_set.get_tile_rect(curr_int_tile))
-
 
 def main():
     #Intialize game library.
@@ -67,11 +29,11 @@ def main():
     )
 
     #Load in game sprites and title
-    player_sprites = pygame.image.load("sprites/player.png").convert()
+    player_sprites = pygame.image.load("sprites/player.png")
+    player_sprites.convert()
     player_sprites.set_colorkey((255,0,255))
     pygame.display.set_icon(player_sprites)
     pygame.display.set_caption("Codemon2.0")
-
 
     board.load_characters([test_player])
     test_player.set_sprite_sheet(player_sprites)
@@ -82,9 +44,6 @@ def main():
     test_tiles = Tileset("Forest").load_tileset("sprites/complete_tileset.png")
     render_engine = Renderer()
     render_engine.load_board(board).load_tileset(test_tiles)
-
-    #Add a buffer
-    #todo make render render out to a buffer then to screen
 
     while running:
         #Clock timing
@@ -124,8 +83,7 @@ def main():
 
         #Draw the player on the screen
         screenbuff.blit(test_player.get_sprite_sheet(),
-                    (player_x * 32, player_y * 32)
-
+                    (player_x * 32, player_y * 32), test_player.get_next_sprite()
         )
         #Update screen, write screen buffer to screen
         screen.blit(screenbuff,

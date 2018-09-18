@@ -8,7 +8,17 @@ class Character:
     __board_ref = None #Sets what board the character is loaded into
     __sprite_sheet = None
 
-    face_dir = None
+    __up_sprite =    [(32, 96, 32, 32), (0, 96, 32, 32), (64, 96, 32, 32)]
+    __down_sprite =  [(32,  0, 32, 32), (0, 0,  32, 32), (64,  0, 32, 32)]
+    __left_sprite =  [(32, 32, 32, 32), (0, 32, 32, 32), (64, 32, 32, 32)]
+    __right_sprite = [(32, 64, 32, 32), (0, 64, 32, 32), (64, 64, 32, 32)]
+
+    __sprite_locs = [__up_sprite, __right_sprite, __down_sprite, __left_sprite ]
+
+    __curr_sprite = __down_sprite
+
+    face_dir = SOUTH
+    __prev_face_dir = ""
     anim_num = 0
 
     def __init__(self, name, location):
@@ -41,8 +51,17 @@ class Character:
     def get_sprite_sheet(self):
         return self.sprite
 
+    def get_next_sprite(self):
+        #Sets next character sprite based on current facing direction
+        #Sprite locs are hardcoded in class header
+        self.__curr_sprite = self.__sprite_locs[self.face_dir]
+
+        return self.__curr_sprite[self.anim_num]
+
     # Move the character - only works on discrete directions
     def move(self, direction):
+        self.__prev_face_dir = self.face_dir
+
         if direction:
             if direction == "NORTH":
                 self.face_dir =  NORTH
@@ -64,6 +83,12 @@ class Character:
                 if self.__board_ref.check_bounds((self.loc_x + 1, self.loc_y)):
                     if DEBUG: print "PASS BOUNDS"
                     self.loc_x = self.loc_x + 1
+        # Keep track of movement animation number. Reset number if face_dur is different.
+        if self.__prev_face_dir == self.face_dir:
+            self.anim_num = (self.anim_num + 1) % 3
+        else:
+            self.anim_num = 0
+        print self.anim_num
 
     def get_loc(self):
         return (self.loc_x, self.loc_y)

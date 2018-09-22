@@ -2,7 +2,7 @@ import pygame
 import Codemon2
 import numpy
 
-from constants import *
+from Constants import *
 
 '''Class that holds all tiles and mapping data for a specific tileset'''
 class Tileset:
@@ -42,6 +42,7 @@ class Game_board:
     __characters_refs = []     #List of characters on the game board,
                                #scanned through for location at render time
     __map = None               #Integer tile representation array
+    __collision_map = None
     __image = None             #Game_board render buffer
     __width = 0
     __height = 0
@@ -54,7 +55,7 @@ class Game_board:
         self.__board_name   = board_name
         self.__tileset      = Tileset("Forest").load_tileset("sprites/Forest.png")
         self.__map = numpy.zeros(shape=(width, height), dtype=numpy.int8)
-        self.__map[3][3] = 1
+        self.__collision_map = numpy.zeros(shape=(width, height), dtype=numpy.int8)
 
     '''Load list of characters into game map'''
     def load_characters(self, characters_list):
@@ -78,9 +79,26 @@ class Game_board:
         self.__tileset = Tileset().load_tileset(path)
         return self
 
-    '''Load in integer representation of the game board from file'''
+    '''Load in integer representation of the game board from file
+    The method reads in the graphical tile representation of the map
+    and from that extracts a collision map from the graphical tile.'''
+
     def load_board_from_file(self, path):
-        pass
+        with open(path) as f:
+            dimension = f.readline().replace(' ', '')
+            self.__width = int(dimension[0])
+            self.__height = int(dimension[1])
+
+            for y in range(self.__height):
+                for x in range (self.__width):
+                    tile = int(f.read(2).replace(' ', ""))
+
+                    if tile == SIGN:
+                        self.__collision_map[x][y] = 1
+                    self.__map[y][x] = tile
+                    print self.__map[y][x]
+
+        print dimension
 
     '''String representation of game_board'''
     def __str__(self):
@@ -100,7 +118,7 @@ class Game_board:
         return False
 
     '''Checks wether a location tuple is colliding with a map entity'''
-    def check_collision(self, loc):
-        pass
+    def collides(self, loc):
+        return self.__collision_map[loc[0]][loc[1]] != 0
 
 

@@ -1,4 +1,4 @@
-from constants import *
+from Constants import *
 
 #TODO add event listener bounds checking
 class Character:
@@ -62,33 +62,30 @@ class Character:
     def move(self, direction):
         self.__prev_face_dir = self.face_dir
 
+        new_x = self.loc_x
+        new_y = self.loc_y
         if direction:
             if direction == "NORTH":
                 self.face_dir =  NORTH
-                if self.__board_ref.check_bounds((self.loc_x, self.loc_y - 1)):
-                    if DEBUG: print "PASS BOUNDS"
-                    self.loc_y = self.loc_y - 1
+                new_y = new_y - 1
             elif direction == "SOUTH":
                 self.face_dir = SOUTH
-                if self.__board_ref.check_bounds((self.loc_x, self.loc_y + 1)):
-                    if DEBUG: print "PASS BOUNDS"
-                    self.loc_y = self.loc_y + 1
+                new_y = new_y + 1
             elif direction == "WEST":
                 self.face_dir = WEST
-                if self.__board_ref.check_bounds((self.loc_x - 1, self.loc_y)):
-                    if DEBUG: print "PASS BOUNDS"
-                    self.loc_x = self.loc_x - 1
+                new_x = new_x - 1
             elif direction == "EAST":
                 self.face_dir = EAST
-                if self.__board_ref.check_bounds((self.loc_x + 1, self.loc_y)):
-                    if DEBUG: print "PASS BOUNDS"
-                    self.loc_x = self.loc_x + 1
+                new_x = new_x + 1
+        if self.__board_ref.check_bounds((new_x, new_y)) and not self.__board_ref.collides((new_x, new_y)):
+            self.loc_x = new_x
+            self.loc_y = new_y
+
         # Keep track of movement animation number. Reset number if face_dur is different.
         if self.__prev_face_dir == self.face_dir:
             self.anim_num = (self.anim_num + 1) % 3
         else:
             self.anim_num = 0
-        print self.anim_num
 
     def get_loc(self):
         return (self.loc_x, self.loc_y)

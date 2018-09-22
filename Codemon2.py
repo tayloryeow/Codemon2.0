@@ -1,5 +1,5 @@
 from Renderer import Renderer
-from character import *
+from Character import *
 from pygame.locals import *
 from Game_Board import *
 
@@ -15,17 +15,18 @@ def main():
 
     #Load Game objects
     board = Game_board("Test_board", screen_width, screen_height)
-    test_player = Character("Paper Boy", (screen_width // 2, screen_height // 2))
+    board.load_board_from_file("maps/testing.txt")
+    test_player = Character("Paper Boy", (board.get_width() // 2, board.get_height() // 2))
     #Create Screen
     screen = pygame.display.set_mode(
-        (board.get_width() * tile_width,
-         board.get_height() * tile_height)
+        (screen_width * tile_width,
+         screen_height * tile_height)
     )
 
     #Create Screen Buffer
     screenbuff = pygame.Surface(
-        (board.get_width() * tile_width,
-         board.get_height() * tile_height)
+        (screen_width * tile_width,
+         screen_height * tile_height)
     )
 
     #Load in game sprites and title

@@ -32,8 +32,8 @@ class Renderer:
     '''Loop through every index of the bitmap and resolve it into its graphical tile'''
     def render_board(self, screen):
         # create a new Surface
-        for y in range(0, self.board.get_width()):
-            for x in range(0, self.board.get_height()):
+        for y in range(0, self.board.get_height()):
+            for x in range(0, self.board.get_width()):
                 curr_int_tile = self.board.get_tile((x,y))
 
                 #Check that the tile is valid
